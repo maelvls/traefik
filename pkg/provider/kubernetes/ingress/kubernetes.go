@@ -220,6 +220,76 @@ func (p *Provider) loadConfigurationFromIngresses(ctx context.Context, client Cl
 			log.FromContext(ctx).Errorf("Error configuring TLS: %v", err)
 		}
 
+		if rtConfig != nil && rtConfig.Router != nil && rtConfig.Router.TLS != nil && rtConfig.Router.TLS.Passthrough == "true" {
+			log.FromContext(ctx).Info("Using passthrough.")
+
+			if ingress.Spec.Backend == nil {
+				log.FromContext(ctx).Info("Must have a default spec.backend when the router.tls.passthrough annotation is set")
+				return conf
+			}
+
+			httpservice, err := loadService(client, ingress.Namespace, *ingress.Spec.Backend)
+			var tcpwrrservices []dynamic.TCPWRRService
+			if httpservice.Weighted != nil {
+				for _, httpwrrservice := range httpservice.Weighted.Services {
+					tcpwrrservices = append(tcpwrrservices, dynamic.TCPWRRService{
+						Name:   httpwrrservice.Name,
+						Weight: httpwrrservice.Weight,
+					})
+				}
+			}
+			var tcpservers []dynamic.TCPServer
+			for _, httpserver := range httpservice.LoadBalancer.Servers {
+				tcpservers = append(tcpservers, dynamic.TCPServer{
+					Address: httpserver.URL,
+					Port:    httpserver.Port,
+				})
+			}
+			tcpservice := &dynamic.TCPService{LoadBalancer: &dynamic.TCPServersLoadBalancer{Servers: tcpservers}, Weighted: &dynamic.TCPWeightedRoundRobin{Services: tcpwrrservices}}
+			if err != nil {
+				log.FromContext(ctx).
+					WithField("serviceName", ingress.Spec.Backend.ServiceName).
+					WithField("servicePort", ingress.Spec.Backend.ServicePort.String()).
+					Errorf("Cannot create service: %v", err)
+				continue
+			}
+
+			var rules []string
+			for _, rule := range ingress.Spec.Rules {
+				if rule.HTTP != nil {
+					log.FromContext(ctx).WithField("host", rule.Host).Info("Cannot use the spec.hosts[].http field when the router.tls.passthrough annotation is set")
+					continue
+				}
+				if rule.Host == "" {
+					rule.Host = "*"
+				}
+				rules = append(rules, "SNIHost("+rule.Host+")")
+
+				serviceName := provider.Normalize(ingress.Namespace + "-" + ingress.Spec.Backend.ServiceName + "-" + ingress.Spec.Backend.ServicePort.String())
+				routerKey := strings.TrimPrefix(provider.Normalize(ingress.Name+"-"+ingress.Namespace+"-"+rule.Host), "-")
+
+				tcprouter := &dynamic.TCPRouter{
+					EntryPoints: rtConfig.Router.EntryPoints,
+					Rule:        strings.Join(rules, " && "),
+					Service:     serviceName,
+				}
+
+				// TODO: passthrough = ignore TLS config, right?
+				// if rtConfig.Router.TLS != nil {
+				// 	tcprouter.TLS = rtConfig.Router.TLS
+				// }
+
+				conf.TCP.Services[serviceName] = tcpservice
+				conf.TCP.Routers[routerKey] = tcprouter
+			}
+
+			if err := p.updateIngressStatus(ingress, client); err != nil {
+				log.FromContext(ctx).Errorf("Error while updating ingress status: %v", err)
+			}
+
+			continue
+		}
+
 		if len(ingress.Spec.Rules) == 0 && ingress.Spec.Backend != nil {
 			if _, ok := conf.HTTP.Services["default-backend"]; ok {
 				log.FromContext(ctx).Error("The default backend already exists.")

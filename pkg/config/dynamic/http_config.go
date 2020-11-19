@@ -52,6 +52,7 @@ type RouterTLSConfig struct {
 	Options      string         `json:"options,omitempty" toml:"options,omitempty" yaml:"options,omitempty"`
 	CertResolver string         `json:"certResolver,omitempty" toml:"certResolver,omitempty" yaml:"certResolver,omitempty"`
 	Domains      []types.Domain `json:"domains,omitempty" toml:"domains,omitempty" yaml:"domains,omitempty"`
+	Passthrough  string         `json:"passthrough,omitempty" toml:"passthrough,omitempty" yaml:"passthrough,omitempty"`
 }
 
 // +k8s:deepcopy-gen=true
