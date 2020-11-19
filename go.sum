@@ -245,6 +245,8 @@ github.com/elastic/go-sysinfo v1.1.1 h1:ZVlaLDyhVkDfjwPGU55CQRCRolNpc7P0BbyhhQZQ
 github.com/elastic/go-sysinfo v1.1.1/go.mod h1:i1ZYdU10oLNfRzq4vq62BEwD2fH8KaWh6eh0ikPT9F0=
 github.com/elastic/go-windows v1.0.0 h1:qLURgZFkkrYyTTkvYpsZIgf83AUsdIHfvlJaqaZ7aSY=
 github.com/elastic/go-windows v1.0.0/go.mod h1:TsU0Nrp7/y3+VwE82FoZF8gC/XFg/Elz6CcloAxnPgU=
+github.com/elazarl/go-bindata v3.0.5+incompatible h1:A96CMaZLWo1V8BnpNPLlKNEB2Ck6pxSOWPB6yz9a/tE=
+github.com/elazarl/go-bindata v3.0.5+incompatible/go.mod h1:kfshm+ZGko3lslOtPJA0CR27QKFl8Zw9HSyyLywkEgI=
 github.com/elazarl/go-bindata-assetfs v1.0.0 h1:G/bYguwHIzWq9ZoyUQqrjTmJbbYn3j3CKKpKinvZLFk=
 github.com/elazarl/go-bindata-assetfs v1.0.0/go.mod h1:v+YaWX3bdea5J/mo8dSETolEo7R71Vk1u8bnjau5yw4=
 github.com/elazarl/goproxy v0.0.0-20180725130230-947c36da3153/go.mod h1:/Zj4wYkgs4iZTTu3o/KG3Itv/qCCa8VVMlb3i9OVuzc=
@@ -766,6 +768,7 @@ github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5 h1:LnC5Kc
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/traefik/paerser v0.1.0 h1:B4v1tbvd8YnHsA7spwHKEWJoGrRP+2jYpIozsCMHhl0=
 github.com/traefik/paerser v0.1.0/go.mod h1:yYnAgdEC2wJH5CgG75qGWC8SsFDEapg09o9RrA6FfrE=
+github.com/traefik/traefik v1.7.26 h1:Uhsa2PsbcjjEtaY0KKwTcuKlL/2UeslhgcBrR5pXAvo=
 github.com/traefik/yaegi v0.9.5 h1:mRJtmV6t/wecIq6Gfs0DpdSC2AjFpPRjoiBXP03OIz0=
 github.com/traefik/yaegi v0.9.5/go.mod h1:FAYnRlZyuVlEkvnkHq3bvJ1lW5be6XuwgLdkYgYG6Lk=
 github.com/transip/gotransip/v6 v6.2.0 h1:0Z+qVsyeiQdWfcAUeJyF0IEKAPvhJwwpwPi2WGtBIiE=
